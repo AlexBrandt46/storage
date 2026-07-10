@@ -16,7 +16,7 @@ export class LruCache<K extends {}, V extends {}>
 {
   private readonly cache: BaseLruCache<K, V>
   private readonly purgeStaleTimer?: ReturnType<typeof setInterval>
-  private readonly lookupStatus: BaseLruCache.Status<V> = {}
+  private readonly lookupStatus: BaseLruCache.Status<K, V> = {}
   private readonly lookupOptions = { status: this.lookupStatus }
 
   constructor(options: LruCacheOptions<K, V>) {

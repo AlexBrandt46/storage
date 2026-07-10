@@ -99,7 +99,7 @@ function createTusServer(
     datastore,
     disableTerminationForFinishedUploads: true,
     locker: (rawReq: Request) => {
-      const req = rawReq.node?.req as MultiPartRequest
+      const req = rawReq.runtime?.node?.req as MultiPartRequest
 
       if (!req) {
         throw ERRORS.InternalError(undefined, 'Request object is missing')
@@ -136,7 +136,7 @@ function createTusServer(
     respectForwardedHeaders: true,
     allowedHeaders: ['Authorization', 'X-Upsert', 'Upload-Expires', 'ApiKey', 'x-signature'],
     maxSize: async (rawReq, uploadId) => {
-      const req = rawReq.node?.req as MultiPartRequest
+      const req = rawReq.runtime?.node?.req as MultiPartRequest
 
       if (!req.upload.tenantId) {
         return uploadFileSizeLimit

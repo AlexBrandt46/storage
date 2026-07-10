@@ -1,6 +1,7 @@
 # Base stage for shared environment setup
-FROM node:24-alpine3.23 AS base
-RUN apk add --no-cache g++ make python3
+FROM node:24-alpine3.24 AS base
+RUN npm update -g
+RUN apk update && apk upgrade --no-cache && apk add --no-cache g++ make python3 && rm -rf /var/cache/apk/*
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY scripts/ensure-npm-version.cjs ./scripts/ensure-npm-version.cjs
@@ -25,10 +26,13 @@ COPY --from=dependencies /node_modules_cache ./node_modules
 RUN npm prune --omit=dev
 
 # Final stage - for the production build
-FROM base AS final
+FROM node:24-alpine3.24 AS final
+RUN npm update -g
 ARG VERSION
 ENV VERSION=$VERSION
 COPY migrations migrations
+
+RUN apk update && apk upgrade --no-cache && apk add --no-cache g++ make python3 && rm -rf /var/cache/apk/*
 
 # Copy production node_modules from the production dependencies stage
 COPY --from=production-deps /app/node_modules node_modules
